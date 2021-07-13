@@ -7,30 +7,11 @@
 import random
 import pygame
 import numpy as np
-from enum import Enum
 
-
-class Directions(Enum):
-    UP = 0
-    DOWN = 1
-    LEFT = 2
-    RIGHT = 3
-
-    @staticmethod
-    def exlude(dire1, dire2):
-        p = dire1.value // 2 == dire2.value // 2
-        q = dire1.value % 2 != dire2.value % 2
-        return p and q
+from common import Directions
 
 
 class Snake:    # 🐍
-    dire_vec = {
-        Directions.UP: np.array([-1, 0]),
-        Directions.DOWN: np.array([1, 0]),
-        Directions.LEFT: np.array([0, -1]),
-        Directions.RIGHT: np.array([0, 1]),
-    }
-
     def __init__(self, game_map):
         self.dead = False
         self.head_pos = np.array([9, 11])
@@ -45,14 +26,15 @@ class Snake:    # 🐍
         # Update the state of the snake and modify the game map
         """ Please complete the update function """
         # Compute the next postion of the snake head
-        next_pos = (self.head_pos + Snake.dire_vec[self.direction]) % GameWorld.size
+        res = ''
+        next_pos = (self.head_pos + self.direction.vec()) % GameWorld.size
         if game_map[next_pos[0]][next_pos[1]] == 0:
             # next position is empty
             i, j = next_pos
             game_map[i][j] = 1
             i, j = self.tail_pos
             game_map[i][j] = 0
-            self.tail_pos = (self.tail_pos + Snake.dire_vec[self.dire_queue[-1]]) % GameWorld.size
+            self.tail_pos = (self.tail_pos + self.dire_queue[-1].vec()) % GameWorld.size
             self.dire_queue.insert(0, self.direction)
             self.dire_queue.pop()
 
@@ -63,11 +45,13 @@ class Snake:    # 🐍
             # get bean
             game_map[next_pos[0]][next_pos[1]] = 1
             pygame.event.post(pygame.event.Event(pygame.USEREVENT, name='got bean'))
+            res = 'got bean'
             # 更新方向队列
             self.dire_queue.insert(0, self.direction)
         if not self.dead:
             self.head_pos = next_pos
         """ ------------------------ """
+        return res
 
     def __len__(self):
         return len(self.dire_queue) + 1

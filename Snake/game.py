@@ -6,7 +6,8 @@
 
 import pygame
 
-from logic import GameWorld, Directions
+from logic import GameWorld
+from common import Directions
 from render import AssetMgr, WindowRenderer
 
 
