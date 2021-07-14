@@ -1,7 +1,7 @@
 """
 @DATE: 2021/7/10
 @Author: Ziqi Wang
-@File: game.py
+@File: waterpuzzle.py
 """
 
 import pygame
