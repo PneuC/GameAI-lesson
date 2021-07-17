@@ -4,33 +4,29 @@
 @File: waterpuzzle.py
 """
 
-from queue import Queue
-
 import pygame
 
 import numpy as np
+from common import Directions
 
-from enum import Enum
-import numpy as np
-
-
-dire_vecs = np.array([[-1, 0], [1, 0], [0, -1], [0, 1]])
-
-
-class Directions(Enum):
-    UP = 0
-    LEFT = 2
-    RIGHT = 3
-
-    @staticmethod
-    def exlude(dire1, dire2):
-        p = dire1.value // 2 == dire2.value // 2
-        q = dire1.value % 2 != dire2.value % 2
-        return p and q
-
-    def vec(self):
-        global dire_vecs
-        return dire_vecs[self.value]
+#
+# dire_vecs = np.array([[-1, 0], [1, 0], [0, -1], [0, 1]])
+#
+#
+# class Directions(Enum):
+#     UP = 0
+#     LEFT = 2
+#     RIGHT = 3
+#
+#     @staticmethod
+#     def exlude(dire1, dire2):
+#         p = dire1.value // 2 == dire2.value // 2
+#         q = dire1.value % 2 != dire2.value % 2
+#         return p and q
+#
+#     def vec(self):
+#         global dire_vecs
+#         return dire_vecs[self.value]
 
 
 class WaterPuzzleRenderer:
@@ -106,14 +102,14 @@ class WaterPuzzle:
     def step(self, action):
         next_pos = self.player_pos + Directions(action).vec()
         if not self.pos_valid(next_pos):
-            return 0
-        reward = 0
+            return -1
+        reward = -1
         i, j = next_pos
         if self.game_map[i, j] == 'k':
             self.got_key = True
-            reward = 5
+            reward = 50
         if self.game_map[i, j] == 'd':
-            reward = 5
+            reward = 50
             self.finish = True
         self.game_map[i, j] = 'p'
         i, j = self.player_pos

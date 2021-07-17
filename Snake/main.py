@@ -1,3 +1,6 @@
+import sys
+sys.path.append('../')
+
 import argparse
 from game import Game
 from agent import RandomAgent, EvolutionAgent
@@ -10,6 +13,6 @@ if __name__ == '__main__':
     args = argparser.parse_args()
 
     if args.use_agent:
-        Game(agent=RandomAgent()).run()
+        Game(agent=EvolutionAgent()).run()
     else:
         Game().run()

@@ -3,7 +3,10 @@
 @Author: Ziqi Wang
 @File: play.py
 """
-from Waterpuzzle.waterpuzzle import WaterPuzzle
+import sys
+sys.path.append('../')
+
+from WaterPuzzle.waterpuzzle import WaterPuzzle
 
 
 if __name__ == '__main__':

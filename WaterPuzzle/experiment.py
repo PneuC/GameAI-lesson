@@ -3,17 +3,22 @@
 @Author: Ziqi Wang
 @File: experiment.py
 """
+import sys
+sys.path.append('../')
 
 from waterpuzzle import WaterPuzzle
 from agent import QLearningAgent
 
 if __name__ == '__main__':
-    Q_table = None
-    for _ in range(50):
-        game = WaterPuzzle('./levels/1.txt')
-        Q_agent = QLearningAgent(game.number_states())
-        if Q_table is not None:
-            Q_agent.Q_table = Q_table
+    game = WaterPuzzle('./levels/1.txt')
+    Q_agent = QLearningAgent(game.number_states())
+    max_epoch = 200
+    for it in range(max_epoch):
+        Q_agent.epsilon = (max_epoch - it) / max_epoch
         print(game.run(False, Q_agent))
-        Q_table = Q_agent.Q_table
+        game.__init__('./levels/1.txt')
 
+    game.__init__('./levels/1.txt')
+    Q_agent.epsilon = 0
+    Q_agent.train = False
+    res = game.run(True, Q_agent)

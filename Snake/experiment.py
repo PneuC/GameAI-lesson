@@ -3,10 +3,13 @@
 @Author: Ziqi Wang
 @File: experiment.py
 """
-from agent import RandomAgent
+import sys
+sys.path.append('../')
+
+from agent import EvolutionAgent
 from game import Game
 
 
 if __name__ == '__main__':
     for _ in range(30):
-        print(Game(False, agent=RandomAgent()).run())
+        print(Game(False, agent=EvolutionAgent()).run())
