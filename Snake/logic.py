@@ -22,7 +22,7 @@ class Snake:    # 🐍
         # Set snake elements in the game map
         game_map[9:14, 11] = 1
 
-    def update(self, game_map):
+    def update(self, game_map, simulation=False):
         # Update the state of the snake and modify the game map
         """ Please complete the update function """
         # Compute the next postion of the snake head
@@ -44,7 +44,8 @@ class Snake:    # 🐍
         elif game_map[next_pos[0]][next_pos[1]] == 2:
             # get bean
             game_map[next_pos[0]][next_pos[1]] = 1
-            pygame.event.post(pygame.event.Event(pygame.USEREVENT, name='got bean'))
+            if not simulation:
+                pygame.event.post(pygame.event.Event(pygame.USEREVENT, name='got bean'))
             res = 'got bean'
             # 更新方向队列
             self.dire_queue.insert(0, self.direction)
@@ -120,4 +121,3 @@ class GameWorld:
         self.snake.update(self.game_map)
         if self.snake.dead:
             self.finish = True
-

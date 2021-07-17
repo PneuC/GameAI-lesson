@@ -1,10 +1,12 @@
 """
 @DATE: 2021/7/10
 @Author: Ziqi Wang
-@File: waterpuzzle.py
+@File: game.py
 """
 
 import pygame
+import threading
+import random
 
 from logic import GameWorld
 from common import Directions
@@ -54,6 +56,7 @@ class Game:
         clk = pygame.time.Clock()
         frame_count = 0
         step_count = 0
+        frame_period = 20 - 2 * self.level  # how many ticks one frame
         while True:  # main loop
             # Keep a high fps, otherwise there will be a key express event lag
             clk.tick(60)
@@ -82,10 +85,18 @@ class Game:
                 pygame.display.flip()
                 continue
 
-            if frame_count % (20 - 2 * self.level) == 0:
+            if frame_count % frame_period == 0:
                 if self.agent:
                     snake = self.world.snake
-                    direction = Directions(self.agent.make_decision(self.world))
+                    direction = Directions(0)
+                    if frame_count > 0:
+                        direction = Directions(t.get_result())
+
+                    t = AgentThread(target=self.agent.make_decision,
+                                    args=(self.world, (1000 * frame_period) // 60))  # the thread to make decision
+                    t.start()
+                    if direction is None:
+                        direction = 0
                     if not Directions.exlude(direction, snake.direction):
                         snake.direction = direction
                 self.update()
@@ -93,6 +104,7 @@ class Game:
                 step_count += 1
             if frame_count % 2400 == 2399 and self.level < Game.max_level:
                 self.level += 1
+                frame_period = 20 - 2 * self.level
 
             if self.log and step_count % 50 == 49:
                 print(
@@ -114,7 +126,7 @@ class Game:
                 break
 
             snake = self.world.snake
-            direction = Directions(self.agent.make_decision(self.world))
+            direction = Directions(self.agent.make_decision(self.world, 100))
             if not Directions.exlude(direction, snake.direction):
                 snake.direction = direction
             self.update()
@@ -127,3 +139,19 @@ class Game:
             step_count += 1
         return {'steps': step_count, 'score': self.score, 'length': len(self.world.snake)}
 
+
+class AgentThread(threading.Thread):
+    def __init__(self, target, args=()):
+        super(AgentThread, self).__init__()
+        self.target = target
+        self.args = args
+
+    def run(self):
+        self.result = self.target(*self.args)
+
+    def get_result(self):
+        try:
+            return self.result
+        except Exception:
+            print('Agent has not returned the action.')
+            return random.randrange(4)

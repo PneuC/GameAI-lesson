@@ -1,6 +1,6 @@
 import argparse
 from game import Game
-from agent import RandomAgent
+from agent import RandomAgent, EvolutionAgent
 
 
 if __name__ == '__main__':
