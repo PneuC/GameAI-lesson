@@ -160,7 +160,7 @@ class WaterPuzzle:
                 reward = self.step(event.action)
                 if self.agent.train:
                     self.agent.update_Q(reward, last_obs, event.action, self.get_obs_hash())
-                pygame.time.wait(50)
+                pygame.time.wait(200)
                 self.use_agent()
             WaterPuzzleRenderer.instance.render(self.game_map)
 
