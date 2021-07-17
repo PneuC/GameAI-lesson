@@ -8,8 +8,29 @@ from queue import Queue
 
 import pygame
 
-from common import Directions
 import numpy as np
+
+from enum import Enum
+import numpy as np
+
+
+dire_vecs = np.array([[-1, 0], [1, 0], [0, -1], [0, 1]])
+
+
+class Directions(Enum):
+    UP = 0
+    LEFT = 2
+    RIGHT = 3
+
+    @staticmethod
+    def exlude(dire1, dire2):
+        p = dire1.value // 2 == dire2.value // 2
+        q = dire1.value % 2 != dire2.value % 2
+        return p and q
+
+    def vec(self):
+        global dire_vecs
+        return dire_vecs[self.value]
 
 
 class WaterPuzzleRenderer:
@@ -139,10 +160,11 @@ class WaterPuzzle:
                 elif event.key == pygame.K_RIGHT:
                     self.step(3)
             elif not self.finish and event.type == pygame.USEREVENT:
+                last_obs = self.get_obs_hash()
                 reward = self.step(event.action)
                 if self.agent.train:
-                    self.agent.update_Q(reward)
-                pygame.time.wait(500)
+                    self.agent.update_Q(reward, last_obs, event.action, self.get_obs_hash())
+                pygame.time.wait(50)
                 self.use_agent()
             WaterPuzzleRenderer.instance.render(self.game_map)
 
@@ -157,9 +179,12 @@ class WaterPuzzle:
     def __run_simulation(self):
         step_count = 0
         score = 0
-        while not self.finish and step_count < 1000:  # main loop
-            action = self.agent.make_decision(self.get_obs_hash())
+        while not self.finish and step_count < 10000:  # main loop
+            last_obs = self.get_obs_hash()
+            action = self.agent.make_decision(last_obs)
             reward = self.step(action)
+            new_obs = self.get_obs_hash()
+            self.agent.update_Q(reward, last_obs, action, new_obs)
             score += reward
             step_count += 1
         return {'steps': step_count, 'score': score}
