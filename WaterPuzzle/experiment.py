@@ -4,11 +4,16 @@
 @File: experiment.py
 """
 
-from Waterpuzzle.waterpuzzle import WaterPuzzle
-from Waterpuzzle.agent import QLearningAgent
+from waterpuzzle import WaterPuzzle
+from agent import QLearningAgent
 
 if __name__ == '__main__':
-    for _ in range(10):
+    Q_table = None
+    for _ in range(50):
         game = WaterPuzzle('./levels/1.txt')
-        print(game.run(False, QLearningAgent(game.number_states())))
+        Q_agent = QLearningAgent(game.number_states())
+        if Q_table is not None:
+            Q_agent.Q_table = Q_table
+        print(game.run(False, Q_agent))
+        Q_table = Q_agent.Q_table
 
