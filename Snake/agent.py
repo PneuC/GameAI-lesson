@@ -12,7 +12,7 @@ from copy import deepcopy
 
 from typing import List, Dict
 
-from logic import GameWorld
+from Snake.logic import GameWorld
 from common import Directions
 
 
@@ -20,7 +20,7 @@ def simulate(world, action_seq: List[int]) -> Dict:
     result = {
         'distance to bean': 0,
         'dead': False,
-        'got bean': INDIVIDUAL_LENGTH
+        'got bean': False
     }
     game_map = world.game_map.copy()
     snake = deepcopy(world.snake)
@@ -28,7 +28,7 @@ def simulate(world, action_seq: List[int]) -> Dict:
         snake.direction = Directions(action)
         res = snake.update(game_map, simulation=True)
         if res == 'got bean':
-            result['got bean'] = idx
+            result['got bean'] = True
         if snake.dead:
             result['dead'] = True
     result['distance to bean'] = abs(snake.head_pos - world.bean_pos).sum()
@@ -67,12 +67,10 @@ class EvolutionAgent(Agent):
 
         self.population, self.next_population = [], []
 
-        # budgets
-        self.keepIteration = True
 
     def make_decision(self, observation: GameWorld, time_budget: int) -> int:
         """
-        Implement it. Note: the Agent shouldn't use GameWorld.update() during evaluation.
+        Note: the Agent shouldn't use GameWorld.update() during evaluation.
         """
         start = time.time()
         remaining = time_budget - 20
@@ -115,7 +113,8 @@ class EvolutionAgent(Agent):
             self.next_population.append(deepcopy(self.population[i]))
         self.population.sort(key=lambda x: x[-1])
 
-    def evaluate(self, individual, observation):
+    @staticmethod
+    def evaluate(individual, observation):
         """
         evaluates an individual by rolling the current state with the actions in the individual
         :param individual: individual to be evaluated
@@ -124,15 +123,10 @@ class EvolutionAgent(Agent):
         """
         indiv = deepcopy(individual)
         result = simulate(observation, indiv[:-1])
-        # punish too much turning
-        turn = 0
-        direction = observation.snake.direction.value
-        if direction != indiv[0]:
-            turn = 1
 
-        # try different fitness function
-        indiv[-1] = 10 * result['distance to bean'] + 1000 * result['dead'] \
-                    - 100 * (INDIVIDUAL_LENGTH - result['got bean']) + 5 * turn
+        # 问题1：为什么贪吃蛇吃不到豆子？
+        # 问题2：怎样让贪吃蛇减少转弯的次数？（提示：惩罚需要转弯的动作序列）
+        indiv[-1] = 10 * result['distance to bean'] + 1000 * result['dead'] - 100 * (result['got bean'])
 
         return indiv
 

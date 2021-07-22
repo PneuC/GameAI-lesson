@@ -8,9 +8,9 @@ import pygame
 import threading
 import random
 
-from logic import GameWorld
 from common import Directions
-from render import AssetMgr, WindowRenderer
+from Snake.logic import GameWorld
+from Snake.render import AssetMgr, WindowRenderer
 
 
 class Game:

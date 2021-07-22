@@ -1,14 +1,14 @@
 import sys
+import argparse
+
 sys.path.append('../')
 
-import argparse
-from game import Game
-from agent import RandomAgent, EvolutionAgent
-
+from Snake.game import Game
+from Snake.agent import RandomAgent, EvolutionAgent
 
 if __name__ == '__main__':
     argparser = argparse.ArgumentParser()
-    argparser.add_argument('--use_agent', action='store_true', default=False)
+    argparser.add_argument('--use_agent', action='store_true', default=True)
 
     args = argparser.parse_args()
 
