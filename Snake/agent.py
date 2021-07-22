@@ -17,6 +17,9 @@ from common import Directions
 
 
 def simulate(world, action_seq: List[int]) -> Dict:
+    """
+    simulate the action sequence and get the state of the game
+    """
     result = {
         'distance to bean': 0,
         'dead': False,
