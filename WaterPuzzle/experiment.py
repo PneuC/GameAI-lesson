@@ -13,7 +13,7 @@ from WaterPuzzle.agent import QLearningAgent
 if __name__ == '__main__':
     game = WaterPuzzle('./levels/2.txt')
     Q_agent = QLearningAgent(game.number_states())
-    max_epoch = 200
+    max_epoch = 100
     for it in range(max_epoch):
         Q_agent.epsilon = (max_epoch - it) / max_epoch
         print(game.run(False, Q_agent))

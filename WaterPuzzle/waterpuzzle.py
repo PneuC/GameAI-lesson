@@ -9,25 +9,6 @@ import pygame
 import numpy as np
 from common import Directions
 
-#
-# dire_vecs = np.array([[-1, 0], [1, 0], [0, -1], [0, 1]])
-#
-#
-# class Directions(Enum):
-#     UP = 0
-#     LEFT = 2
-#     RIGHT = 3
-#
-#     @staticmethod
-#     def exlude(dire1, dire2):
-#         p = dire1.value // 2 == dire2.value // 2
-#         q = dire1.value % 2 != dire2.value % 2
-#         return p and q
-#
-#     def vec(self):
-#         global dire_vecs
-#         return dire_vecs[self.value]
-
 
 class WaterPuzzleRenderer:
     instance = None
@@ -102,14 +83,14 @@ class WaterPuzzle:
     def step(self, action):
         next_pos = self.player_pos + Directions(action).vec()
         if not self.pos_valid(next_pos):
-            return -1
-        reward = -1
+            return 0
+        reward = 0
         i, j = next_pos
         if self.game_map[i, j] == 'k':
             self.got_key = True
-            reward = 50
+            reward = 5
         if self.game_map[i, j] == 'd':
-            reward = 50
+            reward = 5
             self.finish = True
         self.game_map[i, j] = 'p'
         i, j = self.player_pos
