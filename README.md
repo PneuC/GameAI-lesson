@@ -40,6 +40,7 @@ python experiment.py
 http://equius.gil.engineering.nyu.edu/index.php
 ![image](https://user-images.githubusercontent.com/33660030/126726130-c933afec-7f15-4214-bb43-0f8b34cae725.png)
 
-Rules
+##Rules
+
 ![image](https://github.com/PneuC/GameAI-lesson/blob/main/rules.png)
 
