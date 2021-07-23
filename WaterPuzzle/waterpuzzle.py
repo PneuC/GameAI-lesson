@@ -78,7 +78,7 @@ class WaterPuzzle:
                 player_count += 1
                 self.player_pos = np.array([i ,j])
         if key_count != 1 or door_count != 1 or player_count != 1:
-            return 'There should be exactlly 1 key, 1 door and 1 player in the game map'
+            return 'There should be exactly 1 key, 1 door and 1 player in the game map'
 
     def step(self, action):
         next_pos = self.player_pos + Directions(action).vec()

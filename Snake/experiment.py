@@ -6,8 +6,8 @@
 import sys
 sys.path.append('../')
 
-from agent import EvolutionAgent
-from game import Game
+from Snake.agent import EvolutionAgent
+from Snake.game import Game
 
 
 if __name__ == '__main__':

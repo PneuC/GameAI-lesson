@@ -5,7 +5,7 @@
 """
 
 import pygame
-from logic import GameWorld
+from Snake.logic import GameWorld
 
 
 class AssetMgr:
